@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiche d'identification MJSA</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Inscription MJSA Saint Louis de Gonzague de Gonzagueville 2025-2026</h1>
+            <p>Renseignez les informations ci-dessous pour générer un document</p>
+        </header>
+        
+        <div class="success-message" id="successMessage">
+            Document généré avec succès ! Vous pouvez maintenant le télécharger en PDF.
+        </div>
+        
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p>Génération du PDF en cours...</p>
+        </div>
+        
+        <div class="form-container">
+            <!-- Section Enfant -->
+            <div class="form-section">
+                <h2>Informations de l'Enfant</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="childFirstName">Prénom de l'enfant</label>
+                        <input type="text" id="childFirstName" placeholder="Prénom">
+                    </div>
+                    <div class="form-group">
+                        <label for="childLastName">Nom de l'enfant</label>
+                        <input type="text" id="childLastName" placeholder="Nom">
+                    </div>
+                    <div class="form-group">
+                        <label for="childBirthDate">Date de naissance</label>
+                        <input type="date" id="childBirthDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="childBirthPlace">Lieu de naissance</label>
+                        <input type="text" id="childBirthPlace" placeholder="Lieu de naissance">
+                    </div>
+                    <div class="form-group">
+                        <label for="childAddress">Domicile</label>
+                        <input type="text" id="childAddress" placeholder="Adresse">
+                    </div>
+                    <div class="form-group">
+                        <label for="childAddress">Catégorie</label>
+                        <input type="text" id="childCategorie" placeholder="Catégorie">
+                    </div>
+                    <div class="form-group">
+                        <label for="childBirthDate">Année d'entrée dans le mouvement</label>
+                        <input type="number" id="childYear">
+                    </div>
+                    <div class="form-group">
+                        <label for="childPhoto">Photo de l'enfant</label>
+                        <input type="file" id="childPhoto" accept="image/*">
+                        <div class="photo-preview" id="childPhotoPreview">
+                            <span>Aucune photo sélectionnée</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section Mère -->
+            <div class="form-section">
+                <h2>Informations de la Mère</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="motherFirstName">Prénom de la mère</label>
+                        <input type="text" id="motherFirstName" placeholder="Prénom">
+                    </div>
+                    <div class="form-group">
+                        <label for="motherLastName">Nom de la mère</label>
+                        <input type="text" id="motherLastName" placeholder="Nom">
+                    </div>
+                    <div class="form-group">
+                        <label for="motherBirthDate">Date de naissance</label>
+                        <input type="date" id="motherBirthDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="motherBirthPlace">Lieu de naissance</label>
+                        <input type="text" id="motherBirthPlace" placeholder="Lieu de naissance">
+                    </div>
+                    <div class="form-group">
+                        <label for="motherAddress">Domicile</label>
+                        <input type="text" id="motherAddress" placeholder="Adresse">
+                    </div>
+                    <div class="form-group">
+                        <label for="motherAddress">Numéro du parent</label>
+                        <input type="tel" id="motherNumber" placeholder="01 42 52 97 02">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section Père -->
+            <div class="form-section">
+                <h2>Informations du Père</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="fatherFirstName">Prénom du père</label>
+                        <input type="text" id="fatherFirstName" placeholder="Prénom">
+                    </div>
+                    <div class="form-group">
+                        <label for="fatherLastName">Nom du père</label>
+                        <input type="text" id="fatherLastName" placeholder="Nom">
+                    </div>
+                    <div class="form-group">
+                        <label for="fatherBirthDate">Date de naissance</label>
+                        <input type="date" id="fatherBirthDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="fatherBirthPlace">Lieu de naissance</label>
+                        <input type="text" id="fatherBirthPlace" placeholder="Lieu de naissance">
+                    </div>
+                    <div class="form-group">
+                        <label for="fatherAddress">Domicile</label>
+                        <input type="text" id="fatherAddress" placeholder="Adresse">
+                    </div>
+                    <div class="form-group">
+                        <label for="fatherAddress">Numéro du parent</label>
+                        <input type="tel" id="fatherNumber" placeholder="01 42 52 97 02">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button id="generateBtn">Générer le Document</button>
+            </div>
+        </div>
+        
+        <!-- Document généré -->
+        <div class="document-container" id="documentContainer">
+            <div class="document-header">
+                <h1>Fiche d'identification</h1>
+                <p>Généré le <span id="documentDate"></span></p>
+            </div>
+            
+            <!-- NOUVELLE STRUCTURE : Section enfant avec photo à droite -->
+            <div class="document-section">
+                <h2 class="document-title">Informations de l'Enfant</h2>
+                <div class="child-section-container">
+                    <div class="child-info">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Nom et Prénom:</span>
+                                <span id="docChildName"></span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Date de naissance:</span>
+                                <span id="docChildBirthDate"></span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Lieu de naissance:</span>
+                                <span id="docChildBirthPlace"></span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Domicile:</span>
+                                <span id="docChildAddress"></span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Catégorie:</span>
+                                <span id="docChildCategorie"></span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Année d'entrée dans le mouvement:</span>
+                                <span id="docChildYear"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="child-photo-container">
+                        <span class="photo-label">Photo de l'enfant</span>
+                        <div class="child-photo" id="docChildPhoto">
+                            <span>Aucune photo disponible</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="document-section">
+                <h2 class="document-title">Informations de la Mère</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Nom et Prénom:</span>
+                        <span id="docMotherName"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Date de naissance:</span>
+                        <span id="docMotherBirthDate"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Lieu de naissance:</span>
+                        <span id="docMotherBirthPlace"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Domicile:</span>
+                        <span id="docMotherAddress"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Numéro du parent:</span>
+                        <span id="docMotherNumber"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="document-section">
+                <h2 class="document-title">Informations du Père</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Nom et Prénom:</span>
+                        <span id="docFatherName"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Date de naissance:</span>
+                        <span id="docFatherBirthDate"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Lieu de naissance:</span>
+                        <span id="docFatherBirthPlace"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Domicile:</span>
+                        <span id="docFatherAddress"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Numéro du parent:</span>
+                        <span id="docFatherNumber"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="document-footer">
+                <p>Document généré automatiquement - Toutes les informations sont confidentielles</p>
+            </div>
+            
+            <div class="btn-container no-print">
+                <button id="downloadPdfBtn">Télécharger en PDF</button>
+                <button id="editBtn">Modifier les Informations</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
