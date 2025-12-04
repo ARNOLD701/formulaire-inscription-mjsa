@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Utiliser html2canvas pour capturer le document
                 html2canvas(document.getElementById('documentContainer'), {
-                    scale: 6, // Augmenter la qualité
+                    scale: 8, // Augmenter la qualité
                     useCORS: true,
                     logging: false,
                     //Ignorer les éléments la classe no-print
