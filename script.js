@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Utiliser html2canvas pour capturer le document
                 html2canvas(document.getElementById('documentContainer'), {
-                    scale: 5, // Augmenter la qualité
+                    scale: 2, // Augmenter la qualité
                     useCORS: true,
                     logging: false,
                     //Ignorer les éléments la classe no-print
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         return element.classList.contains('no-print');
                     }
                 }).then(canvas => {
-                    const imgData = canvas.toDataURL('image/jpeg', 2.0);
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
                     
                     // Créer le PDF
                     const { jsPDF } = window.jspdf;
