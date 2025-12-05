@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
             // Initialisation - masquer le document au chargement
-            const documentContainer = document.querySelector('.document-wrapper');
-            documentContainer.style.display = 'none';
+            const documentWrapper = document.querySelector('.document-wrapper');
+            documentWrapper.style.display = 'none';
             
             // Gestion de la prévisualisation de la photo
             const childPhotoInput = document.getElementById('childPhoto');
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     reader.readAsDataURL(childPhotoInput.files[0]);
                 } else {
-                    docChildPhoto.innerHTML = '<span>Aucune photo disponible</span>';
+                    docChildPhoto.innerHTML = '<span style="font-size: 14px;">Aucune photo disponible</span>';
                 }
                 
                 // Affichage du document avec animation
@@ -142,51 +142,51 @@ document.addEventListener('DOMContentLoaded', function() {
                 loadingIndicator.style.display = 'block';
                 
                 //Sauvegarder la transformation actuelle
-                const documentConst = document.getElementById('documentContainer');
-                const originalScale = documentContainer.style.transform;
+                const documentContainer = document.getElementById('documentContainer');
+                const originalScale = documentWrapper.style.transform;
 
                 //Rétablir la taille originale pour la capture haute résolution
-                documentContainer.style.transform = 'scale(1)';
-                documentConst.style.boxShadow = 'none';
+                documentWrapper.style.transform = 'scale(1)';
+                documentContainer.style.boxShadow = 'none';
 
                 // Utiliser html2canvas pour capturer le document
                 setTimeout(() => {
-                html2canvas(documentConst, {
+                html2canvas(documentContainer , {
                     scale: 3, // Augmenter la qualité
                     useCORS: true,
                     logging: false,
                     backgroundColor: '#FFFFFF',
                     allowTaint: true,
                     //paramètrage pour améliorer la qualité
-                    windowWidth: documentConst.scrollWidth,
-                    windowHeight: documentConst.scrollHeight,
+                    windowWidth: documentContainer.scrollWidth,
+                    windowHeight: documentContainer.scrollHeight,
                     //Ignorer les éléments la classe no-print
                     ignoreElements: function(element){
                         return element.classList.contains('no-print');
                     },
                     //optimisation de la qualité
-                    onclone: function(cloneDoc) {
-                        const clonedConst = cloneDoc.getElementById('documentContainer');
-                        if(clonedConst){
-                            clonedConst.style.boxShadow= 'none';
+                    onclone: function(clonedDoc) {
+                        const clonedContainer = clonedDoc.getElementById('documentContainer');
+                        if(clonedContainer){
+                            clonedContainer.style.boxShadow= 'none';
 
-                            const images= clonedConst.getElementByTagName('img');
+                            const images= clonedContainer.getElementsByTagName('img');
                             for(let img of images){
                                 img.style.imageRendering ='crisp-edges';
                                 img.style.webkitFontSmoothing = 'antialiased';
                             }
 
-                            clonedConst.style.webkitFontSmoothing = 'antialiased';
-                            clonedConst.style.mozOsxFontSmoothing = 'grayscale';
+                            clonedContainer.style.webkitFontSmoothing = 'antialiased';
+                            clonedContainer.style.mozOsxFontSmoothing = 'grayscale';
                         }
                     }    
                 }).then(canvas => {
-                    documentContainer.style.transform = originalScale;
-                    documentConst.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+                    documentWrapper.style.transform = originalScale;
+                    documentContainer.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
 
                     const optimizedCanvas = optimizeCanvasQuality(canvas);
 
-                    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                    const imgData = optimizedCanvas.toDataURL('image/jpeg', 0.95);
                     
                     // Créer le PDF
                     const { jsPDF } = window.jspdf;
