@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
             // Initialisation - masquer le document au chargement
-            const documentContainer = document.getElementById('documentContainer');
+            const documentContainer = document.querySelector('.document-wrapper');
             documentContainer.style.display = 'none';
             
             // Gestion de la prévisualisation de la photo
@@ -10,9 +10,13 @@ document.addEventListener('DOMContentLoaded', function() {
             childPhotoInput.addEventListener('change', function() {
                 const file = this.files[0];
                 if (file) {
+                    if (file.size>5*1024*1024) {
+                        alert('Pour une meilleure qualité dans le pdf, utilisez une image de 5MB.');
+                    }
+
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        childPhotoPreview.innerHTML = `<img src="${e.target.result}" alt="Photo de l'enfant">`;
+                        childPhotoPreview.innerHTML = `<img src="${e.target.result}" alt="Photo de l'enfant" style="image-rendering: crisp-edges;>`;
                     }
                     reader.readAsDataURL(file);
                 } else {
@@ -84,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (childPhotoInput.files && childPhotoInput.files[0]) {
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        docChildPhoto.innerHTML = `<img src="${e.target.result}" alt="Photo de l'enfant">`;
+                        docChildPhoto.innerHTML = `<img src="${e.target.result}" alt="Photo de l'enfant"> style="image-rendering: crisp-edges; width: 100%; height: 100%;object-fit: cover;"`;
                     }
                     reader.readAsDataURL(childPhotoInput.files[0]);
                 } else {
@@ -137,17 +141,52 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Afficher l'indicateur de chargement
                 loadingIndicator.style.display = 'block';
                 
+                //Sauvegarder la transformation actuelle
+                const documentConst = document.getElementById('documentContainer');
+                const originalScale = documentContainer.style.transform;
+
+                //Rétablir la taille originale pour la capture haute résolution
+                documentContainer.style.transform = 'scale(1)';
+                documentConst.style.boxShadow = 'none';
+
                 // Utiliser html2canvas pour capturer le document
-                html2canvas(document.getElementById('documentContainer'), {
-                    scale: 4, // Augmenter la qualité
+                setTimeout(() => {
+                html2canvas(documentConst, {
+                    scale: 3, // Augmenter la qualité
                     useCORS: true,
                     logging: false,
+                    backgroundColor: '#FFFFFF',
+                    allowTaint: true,
+                    //paramètrage pour améliorer la qualité
+                    windowWidth: documentConst.scrollWidth,
+                    windowHeight: documentConst.scrollHeight,
                     //Ignorer les éléments la classe no-print
                     ignoreElements: function(element){
                         return element.classList.contains('no-print');
-                    }
+                    },
+                    //optimisation de la qualité
+                    onclone: function(cloneDoc) {
+                        const clonedConst = cloneDoc.getElementById('documentContainer');
+                        if(clonedConst){
+                            clonedConst.style.boxShadow= 'none';
+
+                            const images= clonedConst.getElementById('img');
+                            for(let img of images){
+                                img.style.imageRendering ='crisp-edges';
+                                img.style.webkitFontSmoothing = 'antialiased';
+                            }
+
+                            clonedConst.style.webkitFontSmoothing = 'antialiased';
+                            clonedConst.style.mozOsxFontSmoothing = 'grayscale';
+                        }
+                    }    
                 }).then(canvas => {
-                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                    documentContainer.style.transform = originalScale;
+                    documentConst.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+
+                    const optimizedCanvas = optimizeCanvasQuality(canvas);
+
+                    const imgData = canvas.toDataURL('image/jpeg', 0.95);
                     
                     // Créer le PDF
                     const { jsPDF } = window.jspdf;
@@ -155,21 +194,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     const imgWidth = 210; // Largeur A4
                     const pageHeight = 295; // Hauteur A4
-                    const imgHeight = canvas.height * imgWidth / canvas.width;
-                    let heightLeft = imgHeight;
-                    let position = 0;
+                    const imgHeight = (optimizedCanvas.height*imgWidth)/optimizedCanvas.width;
                     
-                    // Ajouter la première page
-                    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                    
-                    // Ajouter des pages supplémentaires si nécessaire
-                    while (heightLeft >= 0) {
-                        position = heightLeft - imgHeight;
-                        pdf.addPage();
-                        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                        heightLeft -= pageHeight;
-                    }
+                    // Ajouter l'image au pdf
+                    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight, '', 'FAST');
                     
                     // Télécharger le PDF
                     const fileName = `Fiche_didentification_${new Date().toISOString().slice(0, 10)}.pdf`;
@@ -181,9 +209,32 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.error('Erreur lors de la génération du PDF:', error);
                     alert('Une erreur est survenue lors de la génération du PDF.');
                     loadingIndicator.style.display = 'none';
+                    //rétablir la transformation en cas d'erreur
+                    documentContainer.style.transform = originalScale;
+                    documentConst.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
                 });
+            }, 200);
             });
             
+            function optimizeCanvasQuality(canvas){
+                //créer un nouveau canvas avec la même taille
+                const optimizedCanvas = document.createElement('canvas');
+                optimizedCanvas.width = canvas.width;
+                optimizedCanvas.height = canvas.height;
+
+                const ctx = optimizedCanvas.getContext('2d');
+
+                //application des paramètres de qualité maximale
+                ctx.imageSmoothingEnabled = false;
+                ctx.webkitImageSmoothingEnabled = false;
+                ctx.mozImageSmoothingEnabled = false;
+                ctx.msImageSmoothingEnabled = false;
+
+                //dessiner l'image originale
+                ctx.drawImage(canvas, 0, 0);
+
+                return optimizedCanvas;
+            }
             // Gestion du bouton modifier
             const editBtn = document.getElementById('editBtn');
             editBtn.addEventListener('click', function() {

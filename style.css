@@ -249,21 +249,8 @@
             100% { transform: rotate(360deg); }
         }
         
-        @media print {
-            .form-container, .btn-container, .success-message {
-                display: none;
-            }
-            
-            .document-container {
-                box-shadow: none;
-                padding: 0;
-                margin: 0;
-                width: 100%;
-            }
-            
-            body {
-                background-color: white;
-            }
+        .no-print {
+            /*cette classe sera utilisée pour masquer les éléments du pdf*/
         }
         
         /* Animation pour le document */
@@ -274,4 +261,17 @@
         
         .fade-in {
             animation: fadeIn 0.5s ease-out;
+        }
+
+        img{
+            image-rendering: optimizeQuality;
+            image-rendering: -websit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+
+        .document-wrapper{
+            transform: scale(0.5);
+            transform-origin: top center;
+            margin: 0 auto;
+            width: 794px;
         }
