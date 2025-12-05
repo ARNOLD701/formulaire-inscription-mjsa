@@ -96,14 +96,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 // Affichage du document avec animation
-                documentContainer.style.display = 'block';
-                documentContainer.classList.add('fade-in');
+                documentWrapper.style.display = 'block';
+                documentWrapper.classList.add('fade-in');
                 
                 // Afficher le message de succès
                 successMessage.style.display = 'block';
                 
                 // Défilement vers le document
-                documentContainer.scrollIntoView({ behavior: 'smooth' });
+                documentWrapper.scrollIntoView({ behavior: 'smooth' });
             });
             
             //Fonction pour numéro de téléphone
