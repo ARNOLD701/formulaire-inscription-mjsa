@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         if(clonedConst){
                             clonedConst.style.boxShadow= 'none';
 
-                            const images= clonedConst.getElementById('img');
+                            const images= clonedConst.getElementByTagName('img');
                             for(let img of images){
                                 img.style.imageRendering ='crisp-edges';
                                 img.style.webkitFontSmoothing = 'antialiased';
