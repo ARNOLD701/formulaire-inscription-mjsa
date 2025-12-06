@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const childAddress = document.getElementById('childAddress').value;
                 const childCategorie = document.getElementById('childCategorie').value;
                 const childYear = document.getElementById('childYear').value;
+                const childNumber = document.getElementById('childNumber').value;
 
                 
                 const motherFirstName = document.getElementById('motherFirstName').value;
@@ -66,15 +67,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('docChildAddress').textContent = childAddress;
                 document.getElementById('docChildCategorie').textContent = childCategorie;
                 document.getElementById('docChildYear').textContent = formatNumber(childYear);
+                document.getElementById('docChildNumber').textContent = formatNumber(childNumber);
 
                 
-                document.getElementById('docMotherName').textContent = `${motherFirstName} ${motherLastName}`;
+                document.getElementById('docMotherName').textContent = `${motherLastName} ${motherFirstName}`;
                 document.getElementById('docMotherBirthDate').textContent = formatDate(motherBirthDate);
                 document.getElementById('docMotherBirthPlace').textContent = motherBirthPlace;
                 document.getElementById('docMotherAddress').textContent = motherAddress;
                 document.getElementById('docMotherNumber').textContent = FormatPhoneNumber(motherNumber);
                 
-                document.getElementById('docFatherName').textContent = `${fatherFirstName} ${fatherLastName}`;
+                document.getElementById('docFatherName').textContent = `${fatherLastName} ${fatherFirstName}`;
                 document.getElementById('docFatherBirthDate').textContent = formatDate(fatherBirthDate);
                 document.getElementById('docFatherBirthPlace').textContent = fatherBirthPlace;
                 document.getElementById('docFatherAddress').textContent = fatherAddress;
