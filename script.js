@@ -42,21 +42,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 const motherFirstName = document.getElementById('motherFirstName').value;
                 const motherLastName = document.getElementById('motherLastName').value;
-                const motherBirthDate = document.getElementById('motherBirthDate').value;
-                const motherBirthPlace = document.getElementById('motherBirthPlace').value;
                 const motherAddress = document.getElementById('motherAddress').value;
                 const motherNumber = document.getElementById('motherNumber').value;
                 
-                const fatherFirstName = document.getElementById('fatherFirstName').value;
-                const fatherLastName = document.getElementById('fatherLastName').value;
-                const fatherBirthDate = document.getElementById('fatherBirthDate').value;
-                const fatherBirthPlace = document.getElementById('fatherBirthPlace').value;
-                const fatherAddress = document.getElementById('fatherAddress').value;
-                const fatherNumber = document.getElementById('fatherNumber').value;
-                
                 // Validation basique
-                if (!childFirstName || !childLastName || !motherFirstName || !motherLastName || !fatherFirstName || !fatherLastName) {
-                    alert('Veuillez remplir au moins les noms et prénoms de l\'enfant, de la mère et du père.');
+                if (!childFirstName || !childLastName || !motherFirstName || !motherLastName) {
+                    alert('Veuillez remplir au moins les noms et prénoms de l\'enfant et du tuteur');
                     return;
                 }
                 
@@ -71,16 +62,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 
                 document.getElementById('docMotherName').textContent = `${motherLastName} ${motherFirstName}`;
-                document.getElementById('docMotherBirthDate').textContent = formatDate(motherBirthDate);
-                document.getElementById('docMotherBirthPlace').textContent = motherBirthPlace;
                 document.getElementById('docMotherAddress').textContent = motherAddress;
                 document.getElementById('docMotherNumber').textContent = FormatPhoneNumber(motherNumber);
-                
-                document.getElementById('docFatherName').textContent = `${fatherLastName} ${fatherFirstName}`;
-                document.getElementById('docFatherBirthDate').textContent = formatDate(fatherBirthDate);
-                document.getElementById('docFatherBirthPlace').textContent = fatherBirthPlace;
-                document.getElementById('docFatherAddress').textContent = fatherAddress;
-                document.getElementById('docFatherNumber').textContent = FormatPhoneNumber(fatherNumber);
                 
                 // Date de génération du document
                 document.getElementById('documentDate').textContent = new Date().toLocaleDateString('fr-FR');
